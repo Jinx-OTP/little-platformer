@@ -32,4 +32,9 @@ public class LittlePlatformerGame extends Game {
             oldScreen.dispose();
         }
     }
+
+    @Override
+    public void dispose() {
+        batch.dispose();
+    }
 }
