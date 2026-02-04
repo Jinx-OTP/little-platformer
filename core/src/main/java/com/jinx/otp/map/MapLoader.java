@@ -8,16 +8,17 @@ public class MapLoader {
 
     private final String MAP_FILE_NAME = "maps/map1.json";
 
-    public Map load() {
+    public GameMap load() {
 
         Json json = new Json();
 
         FileHandle content = Gdx.files.internal(MAP_FILE_NAME);
-
         MapModel model = json.fromJson(MapModel.class, content);
 
-        System.out.println(model);
+        GameMap map = new GameMap(model);
 
-        return null;
+
+
+        return map;
     }
 }

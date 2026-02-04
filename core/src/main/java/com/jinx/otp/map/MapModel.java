@@ -10,6 +10,8 @@ public class MapModel {
     private List<Obstacle> obstacles;
     private float width;
     private float height;
+    private float playerStartX;
+    private float playerStartY;
 
     
     
@@ -59,6 +61,22 @@ public class MapModel {
 
     public void setBackgroundImageName(String backgroundImageName) {
         this.backgroundImageName = backgroundImageName;
+    }
+
+    public float getPlayerStartX() {
+        return playerStartX;
+    }
+
+    public void setPlayerStartX(float playerStartX) {
+        this.playerStartX = playerStartX;
+    }
+
+    public float getPlayerStartY() {
+        return playerStartY;
+    }
+
+    public void setPlayerStartY(float playerStartY) {
+        this.playerStartY = playerStartY;
     }
 
     @Override
