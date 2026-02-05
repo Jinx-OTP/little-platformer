@@ -1,6 +1,7 @@
 package com.jinx.otp;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -73,6 +74,23 @@ public class GameScreen implements Screen {
     }
 
     private void input() {
+
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            camera.translate(0, 1, 0);
+            camera.update();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+            camera.translate(0, -1, 0);
+            camera.update();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+            camera.translate(-1, 0, 0);
+            camera.update();
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
+            camera.translate(1, 0, 0);
+            camera.update();
+        }
 
     }
 
