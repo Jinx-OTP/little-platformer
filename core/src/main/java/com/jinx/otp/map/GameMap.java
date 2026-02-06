@@ -30,6 +30,14 @@ public class GameMap {
         build(model);
     }
 
+    public float getPlayerStartX() {
+        return model.getPlayerStartX();
+    }
+
+    public float getPlayerStartY() {
+        return model.getPlayerStartY();
+    }
+
     private void loadDefaultTextures() {
         final FileHandle platformImageFile = Gdx.files.internal(platformTexturePath);
         platformTexture = new Texture(platformImageFile);

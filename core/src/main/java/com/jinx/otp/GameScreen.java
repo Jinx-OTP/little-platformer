@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jinx.otp.map.GameMap;
 import com.jinx.otp.map.MapLoader;
 
@@ -18,22 +19,26 @@ public class GameScreen implements Screen {
 
     private final float DEFAULT_CAMERA_WIDTH = 10f;
 
-    private final String BACKGROUND_FILE_NAME = "background.png";
+    private final String PLAYER_FILE_NAME = "player.png";
+
+    private final float PLAYER_HEIGHT = 1f;
+    private final float PLAYER_WIDTH = 0.5f;
 
     private LittlePlatformerGame game;
 
     private Camera camera;
 
-    private Texture backgroundTexture;
-    private Sprite backgroundSprite;
     private GameMap map;
     private MapLoader mapLoader;
+
+    private Texture playerTexture;
+    private Sprite playerSprite;
 
     public GameScreen(LittlePlatformerGame game) {
         this.game = game;
         setupCamera();
-        setupBackground();
         setupMap();
+        setupPlayer();
     }
 
     private void setupCamera() {
@@ -48,18 +53,18 @@ public class GameScreen implements Screen {
         camera.update();
     }
 
-    private void setupBackground() {
-        backgroundTexture = new Texture(Gdx.files.internal(BACKGROUND_FILE_NAME));
-        backgroundSprite = new Sprite(backgroundTexture);
-        final float posX = 0f;
-        final float posY = 0f;
-        backgroundSprite.setPosition(posX, posY);
-        backgroundSprite.setSize(WORLD_WIDTH, WORLD_HEIGHT);
-    }
-
     private void setupMap() {
         mapLoader = new MapLoader();
         map = mapLoader.load();
+    }
+
+    private void setupPlayer() {
+        playerTexture = new Texture(PLAYER_FILE_NAME);
+        playerSprite = new Sprite(playerTexture);
+        final float playerStartX = map.getPlayerStartX();
+        final float playerStartY = map.getPlayerStartY();
+        playerSprite.setPosition(playerStartX, playerStartY);
+        playerSprite.setSize(PLAYER_WIDTH, PLAYER_HEIGHT);
     }
 
     @Override
@@ -99,13 +104,17 @@ public class GameScreen implements Screen {
     }
 
     private void draw() {
-        game.batch.setProjectionMatrix(camera.combined);
+        final SpriteBatch batch = game.batch;
+        
+        batch.setProjectionMatrix(camera.combined);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        game.batch.begin();
 
-        map.draw(game.batch);
+        batch.begin();
 
-        game.batch.end();
+        map.draw(batch);
+        playerSprite.draw(batch);
+
+        batch.end();
     }
 
     @Override
@@ -128,6 +137,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
+        playerTexture.dispose();
     }
 
 }
