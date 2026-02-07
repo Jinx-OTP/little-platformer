@@ -49,9 +49,7 @@ public class GameScreen implements Screen {
     }
 
     private void setupPlayer() {
-        final float playerStartX = map.getPlayerStartX();
-        final float playerStartY = map.getPlayerStartY();
-        player = new Player(map, playerStartX, playerStartY);
+        player = new Player(map);
     }
 
     @Override
