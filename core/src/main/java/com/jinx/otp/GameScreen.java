@@ -6,23 +6,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.jinx.otp.map.GameMap;
 import com.jinx.otp.map.MapLoader;
+import com.jinx.otp.player.Player;
 
 public class GameScreen implements Screen {
 
-    private final float WORLD_WIDTH = 100f;
-    private final float WORLD_HEIGHT = 100f;
-
     private final float DEFAULT_CAMERA_WIDTH = 10f;
-
-    private final String PLAYER_FILE_NAME = "player.png";
-
-    private final float PLAYER_HEIGHT = 1f;
-    private final float PLAYER_WIDTH = 0.5f;
 
     private LittlePlatformerGame game;
 
@@ -30,9 +21,8 @@ public class GameScreen implements Screen {
 
     private GameMap map;
     private MapLoader mapLoader;
+    private Player player;
 
-    private Texture playerTexture;
-    private Sprite playerSprite;
 
     public GameScreen(LittlePlatformerGame game) {
         this.game = game;
@@ -59,12 +49,9 @@ public class GameScreen implements Screen {
     }
 
     private void setupPlayer() {
-        playerTexture = new Texture(PLAYER_FILE_NAME);
-        playerSprite = new Sprite(playerTexture);
         final float playerStartX = map.getPlayerStartX();
         final float playerStartY = map.getPlayerStartY();
-        playerSprite.setPosition(playerStartX, playerStartY);
-        playerSprite.setSize(PLAYER_WIDTH, PLAYER_HEIGHT);
+        player = new Player(map, playerStartX, playerStartY);
     }
 
     @Override
@@ -112,7 +99,7 @@ public class GameScreen implements Screen {
         batch.begin();
 
         map.draw(batch);
-        playerSprite.draw(batch);
+        player.draw(batch);
 
         batch.end();
     }
@@ -137,7 +124,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        playerTexture.dispose();
+        map.dispose();
     }
 
 }
