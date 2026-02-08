@@ -14,14 +14,19 @@ import com.badlogic.gdx.math.MathUtils;
 import com.jinx.otp.input_processors.PlayerMoveInputProcessor;
 import com.jinx.otp.map.GameMap;
 import com.jinx.otp.map.MapLoader;
+import com.jinx.otp.map.MapModel;
 import com.jinx.otp.player.Player;
+import com.jinx.otp.player.PlayerModel;
 import com.jinx.otp.services.InputProcessorService;
+import com.jinx.otp.services.PlayerMovementService;
 
 public class GameScreen implements Screen {
 
     private LittlePlatformerGame game;
 
     private Camera camera;
+
+    private final PlayerMovementService playerMovementService;
 
     private GameMap map;
     private MapLoader mapLoader;
@@ -31,6 +36,7 @@ public class GameScreen implements Screen {
 
     public GameScreen(LittlePlatformerGame game) {
         this.game = game;
+        this.playerMovementService = PlayerMovementService.getPlayerMovementService();
         setupCamera();
         setupMap();
         setupPlayer();
@@ -55,7 +61,9 @@ public class GameScreen implements Screen {
     }
 
     private void setupPlayer() {
-        player = new Player(map);
+        final MapModel mapModel = map.getModel();
+        final PlayerModel playerModel = new PlayerModel(mapModel);
+        player = new Player(playerModel);
     }
 
     @Override
@@ -68,29 +76,36 @@ public class GameScreen implements Screen {
         draw();
     }
 
+    private void logic(float delta) {
+        final PlayerModel playerModel = player.getModel();
+        final MapModel mapModel = map.getModel();
+        inputProcessorService.processPlayerMovement(delta, playerModel);
+        playerMovementService.handleGravitation(playerModel, delta);
+        playerMovementService.handleObstacleCollision(playerModel, mapModel);
+        playerMovementService.clampToMapBorders(playerModel, mapModel);
+        centerCameraOnPlayer();
+    }
 
     private void centerCameraOnPlayer() {
-        final float playerX = player.getPosX();
-        final float playerY = player.getPosY();
+        final PlayerModel playerModel = player.getModel();
+        final MapModel mapModel = map.getModel();
+
+        final float playerX = playerModel.getPosX();
+        final float playerY = playerModel.getPosY();
         
         final float cameraX = playerX + (PLAYER_WIDTH / 2);
         final float minCameraX = camera.viewportWidth / 2;
-        final float maxCameraX = map.getWidth() - (camera.viewportWidth / 2);
+        final float maxCameraX = mapModel.getWidth() - (camera.viewportWidth / 2);
         final float adjustedCameraX = MathUtils.clamp(cameraX, minCameraX, maxCameraX);
 
         final float cameraY = playerY + (PLAYER_HEIGHT / 2);
         final float minCameraY = camera.viewportHeight / 2;
-        final float maxCameraY = map.getHeight() - (camera.viewportHeight / 2);
+        final float maxCameraY = mapModel.getHeight() - (camera.viewportHeight / 2);
         final float adjustedCameraY = MathUtils.clamp(cameraY, minCameraY, maxCameraY);
 
         final float newCameraZ = camera.position.z;
         camera.position.set(adjustedCameraX, adjustedCameraY, newCameraZ);
         camera.update();
-    }
-
-    private void logic(float delta) {
-        inputProcessorService.processPlayerMovement(delta, player);
-        centerCameraOnPlayer();
     }
 
     private void draw() {

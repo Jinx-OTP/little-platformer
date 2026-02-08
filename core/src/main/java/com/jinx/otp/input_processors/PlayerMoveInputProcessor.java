@@ -21,6 +21,11 @@ public class PlayerMoveInputProcessor implements InputProcessor {
             case Keys.BACKSPACE:
             case Keys.SPACE:
                 inputProcessorService.keyJumpPressed();
+                return true;
+            case Keys.DOWN:
+            case Keys.CONTROL_LEFT:
+                inputProcessorService.keyCrouchPressed();
+                return true;
             default:
                 return false;
         }
@@ -39,6 +44,11 @@ public class PlayerMoveInputProcessor implements InputProcessor {
             case Keys.BACKSPACE:
             case Keys.SPACE:
                 inputProcessorService.keyJumpReleased();
+                return true;
+            case Keys.DOWN:
+            case Keys.CONTROL_LEFT:
+                inputProcessorService.keyCrouchReleased();
+                return true;
             default:
                 return false;
         }

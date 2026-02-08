@@ -1,6 +1,9 @@
 package com.jinx.otp;
 
+import static com.jinx.otp.constants.Constants.LOG_LEVEL;
+
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
@@ -11,6 +14,7 @@ public class LittlePlatformerGame extends Game {
 
     @Override
     public void create() {
+        Gdx.app.setLogLevel(LOG_LEVEL);
         batch = new SpriteBatch();
         setScreen(new MainMenuScreen(this));
     }

@@ -1,5 +1,7 @@
 package com.jinx.otp.map;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
@@ -101,8 +103,8 @@ public class Obstacle implements Json.Serializable {
                     height = entry.asFloat();
                     break;
                 default:
-                    System.out.println(
-                        "Unknown field in deserialization of an Obstacle object: " + entry.name);
+                    final String message = "Unknown field in deserialization of an Obstacle object: " + entry.name;
+                    Gdx.app.error("JsonParsing", message);
                     break;
             }
         }
@@ -114,6 +116,9 @@ public class Obstacle implements Json.Serializable {
                 + height + "]";
     }
 
+    public Rectangle getBoundingRectangle() {
+        return new Rectangle(posX, posY, width, height);
+    }
     
 
 }

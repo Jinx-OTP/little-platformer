@@ -1,7 +1,7 @@
 package com.jinx.otp.services;
 
 import com.jinx.otp.constants.Direction;
-import com.jinx.otp.player.Player;
+import com.jinx.otp.player.PlayerModel;
 
 public class InputProcessorService {
 
@@ -14,12 +14,15 @@ public class InputProcessorService {
         return service;
     }
 
+    private final PlayerMovementService playerMovementService;
+
     private boolean isRightKeyStillPressed = false;
     private boolean isLeftKeyStillPressed = false;
     private boolean isJumpKeyStillPressed = false;
+    private boolean isCrouchKeyStillPressed = false;
 
     private InputProcessorService() {
-
+        playerMovementService = PlayerMovementService.getPlayerMovementService();
     }
 
     public void keyMoveRightPressed() {
@@ -46,15 +49,26 @@ public class InputProcessorService {
         isJumpKeyStillPressed = false;
     }
 
-    public void processPlayerMovement(float delta, Player player) {
+    public void keyCrouchPressed() {
+        isCrouchKeyStillPressed = true;
+    }
+
+    public void keyCrouchReleased() {
+        isCrouchKeyStillPressed = false;
+    }
+
+    public void processPlayerMovement(float delta, PlayerModel player) {
         if (isRightKeyStillPressed) {
-            player.move(delta, Direction.RIGHT);
+            playerMovementService.move(player, delta, Direction.RIGHT);
         }
         if (isLeftKeyStillPressed) {
-            player.move(delta, Direction.LEFT);
+            playerMovementService.move(player, delta, Direction.LEFT);
         }
         if (isJumpKeyStillPressed) {
-            player.move(delta, Direction.UP);
+            playerMovementService.move(player, delta, Direction.UP);
+        }
+        if (isCrouchKeyStillPressed) {
+            playerMovementService.move(player, delta, Direction.DOWN);
         }
     }
 

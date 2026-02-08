@@ -2,7 +2,6 @@ package com.jinx.otp.map;
 
 import static com.jinx.otp.constants.Constants.PLATFORM_TEXTURE_PATH;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -10,7 +9,6 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.jinx.otp.exceptions.InvalidArgumentException;
 import com.jinx.otp.exceptions.InvalidFilePathException;
@@ -38,6 +36,10 @@ public class GameMap {
 
     public float getPlayerStartY() {
         return model.getPlayerStartY();
+    }
+
+    public MapModel getModel() {
+        return model;
     }
 
     private void loadDefaultTextures() {
@@ -115,26 +117,4 @@ public class GameMap {
         platformTexture.dispose();
     }
 
-    public List<Sprite> getOverlapingObstacles(Rectangle object) {
-        if (null == object) {
-            String message = "Cannot get overlaping obstacles, if rectangle is null!";
-            throw new InvalidArgumentException(message);
-        }
-        List<Sprite> overlappingObstacles = new ArrayList<>();
-        for (final Sprite obstacle : obstacleSprites) {
-            Rectangle obstacleRectangle = obstacle.getBoundingRectangle();
-            if (object.overlaps(obstacleRectangle)) {
-                overlappingObstacles.add(obstacle);
-            }
-        }
-        return overlappingObstacles;
-    }
-
-    public float getWidth() {
-        return model.getWidth();
-    }
-
-    public float getHeight() {
-        return model.getHeight();
-    }
 }
