@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.jinx.otp.input_processors.PlayerMoveInputProcessor;
 import com.jinx.otp.map.GameMap;
 import com.jinx.otp.map.MapLoader;
@@ -72,10 +73,19 @@ public class GameScreen implements Screen {
     private void centerCameraOnPlayer() {
         final float playerX = player.getPosX();
         final float playerY = player.getPosY();
-        final float newCameraX = playerX - (PLAYER_WIDTH / 2);
-        final float newCameraY = playerY - (PLAYER_HEIGHT / 2);
+        
+        final float cameraX = playerX + (PLAYER_WIDTH / 2);
+        final float minCameraX = camera.viewportWidth / 2;
+        final float maxCameraX = map.getWidth() - (camera.viewportWidth / 2);
+        final float adjustedCameraX = MathUtils.clamp(cameraX, minCameraX, maxCameraX);
+
+        final float cameraY = playerY + (PLAYER_HEIGHT / 2);
+        final float minCameraY = camera.viewportHeight / 2;
+        final float maxCameraY = map.getHeight() - (camera.viewportHeight / 2);
+        final float adjustedCameraY = MathUtils.clamp(cameraY, minCameraY, maxCameraY);
+
         final float newCameraZ = camera.position.z;
-        camera.position.set(newCameraX, newCameraY, newCameraZ);
+        camera.position.set(adjustedCameraX, adjustedCameraY, newCameraZ);
         camera.update();
     }
 
