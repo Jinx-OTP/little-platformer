@@ -3,6 +3,9 @@ package com.jinx.otp.player;
 import static com.jinx.otp.constants.Constants.PLAYER_HEIGHT;
 import static com.jinx.otp.constants.Constants.PLAYER_SPEED;
 import static com.jinx.otp.constants.Constants.PLAYER_WIDTH;
+
+import java.util.List;
+
 import static com.jinx.otp.constants.Constants.PLAYER_IMAGE_FILE_NAME;
 
 import com.badlogic.gdx.Gdx;
@@ -10,6 +13,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.jinx.otp.constants.Direction;
 import com.jinx.otp.map.GameMap;
 
@@ -37,7 +42,7 @@ public class Player {
     }
 
     public void move(float delta, Direction direction) {
-        final float distance = PLAYER_SPEED;
+        final float distance = PLAYER_SPEED * delta;
         switch (direction) {
             case UP:
                 playerSprite.translateY(distance);
@@ -52,9 +57,63 @@ public class Player {
                 playerSprite.translateX(distance);
                 break;
         }
+        final Rectangle playerBounds = playerSprite.getBoundingRectangle();
+        final List<Sprite> overlapingObstacles = map.getOverlapingObstacles(playerBounds);
+        if (0 < overlapingObstacles.size()) {
+            for (Sprite obstacle : overlapingObstacles) {
+                switch (direction) {
+                    case LEFT:
+                        clampPositionToRightObstacleBorder(obstacle);
+                        break;
+                    case RIGHT:
+                        clampPositionToLeftObstacleBorder(obstacle);
+                        break;
+                    case UP:
+                        clampPostionToBottomObstacleBorder(obstacle);
+                        break;
+                    case DOWN:
+                        clampPositionToTopObstacleBorder(obstacle);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+    }
 
-        // todo check collision and clamp accordingly
+    private void clampPositionToRightObstacleBorder(Sprite obstacle) {
+        final float rightObstacleBorder = obstacle.getWidth() + obstacle.getX();
+        final float rightMapBorder = map.getWidth();
+        final float playerAdjustedRightMapBorder = rightMapBorder - PLAYER_WIDTH;
+        final float playerPosX = playerSprite.getX();
+        final float adjustedPosX = MathUtils.clamp(playerPosX, rightObstacleBorder, playerAdjustedRightMapBorder);
+        playerSprite.setX(adjustedPosX);
+    }
 
+    private void clampPositionToLeftObstacleBorder(Sprite obstacle) {
+        final float leftObstacleBorder = obstacle.getX();
+        final float playerWidthAdjustedBorder = leftObstacleBorder - PLAYER_WIDTH;
+        final float leftMapBorder = 0f;
+        final float playerPosX = playerSprite.getX();
+        final float adjustedPosX = MathUtils.clamp(playerPosX, leftMapBorder, playerWidthAdjustedBorder);
+        playerSprite.setX(adjustedPosX);
+    }
+
+    private void clampPostionToBottomObstacleBorder(Sprite obstacle) {
+        final float bottomObstacleBorder = obstacle.getY();
+        final float playerHeightAdjustedBOrder = bottomObstacleBorder - PLAYER_HEIGHT;
+        final float bottomMapBorder = 0f;
+        final float playerPosY = playerSprite.getY();
+        final float adjustedPosY = MathUtils.clamp(playerPosY, bottomMapBorder, playerHeightAdjustedBOrder);
+        playerSprite.setY(adjustedPosY);
+    }
+
+    private void clampPositionToTopObstacleBorder(Sprite obstacle) {
+        final float topObstacleBorder = obstacle.getY() + obstacle.getWidth();
+        final float playerAdjustedTopMapBorder = map.getHeight() - PLAYER_HEIGHT;
+        final float playerPosY = playerSprite.getY();
+        final float adjustedPosY = MathUtils.clamp(playerPosY, topObstacleBorder, playerAdjustedTopMapBorder);
+        playerSprite.setY(adjustedPosY);
     }
 
     public float getPosX() {
