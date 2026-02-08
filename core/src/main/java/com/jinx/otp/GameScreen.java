@@ -1,5 +1,8 @@
 package com.jinx.otp;
 
+import static com.jinx.otp.constants.Constants.PLAYER_HEIGHT;
+import static com.jinx.otp.constants.Constants.PLAYER_WIDTH;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
@@ -7,9 +10,12 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.jinx.otp.constants.Direction;
+import com.jinx.otp.input_processors.PlayerMoveInputProcessor;
 import com.jinx.otp.map.GameMap;
 import com.jinx.otp.map.MapLoader;
 import com.jinx.otp.player.Player;
+import com.jinx.otp.services.InputProcessorService;
 
 public class GameScreen implements Screen {
 
@@ -23,12 +29,14 @@ public class GameScreen implements Screen {
     private MapLoader mapLoader;
     private Player player;
 
+    private InputProcessorService inputProcessorService = InputProcessorService.getInputProcessorService();
 
     public GameScreen(LittlePlatformerGame game) {
         this.game = game;
         setupCamera();
         setupMap();
         setupPlayer();
+        Gdx.input.setInputProcessor(new PlayerMoveInputProcessor());
     }
 
     private void setupCamera() {
@@ -58,34 +66,24 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        input();
-        logic();
+        logic(delta);
         draw();
     }
 
-    private void input() {
 
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            camera.translate(0, 1, 0);
-            camera.update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-            camera.translate(0, -1, 0);
-            camera.update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-            camera.translate(-1, 0, 0);
-            camera.update();
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.UP)) {
-            camera.translate(1, 0, 0);
-            camera.update();
-        }
-
+    private void centerCameraOnPlayer() {
+        final float playerX = player.getPosX();
+        final float playerY = player.getPosY();
+        final float newCameraX = playerX - (PLAYER_WIDTH / 2);
+        final float newCameraY = playerY - (PLAYER_HEIGHT / 2);
+        final float newCameraZ = camera.position.z;
+        camera.position.set(newCameraX, newCameraY, newCameraZ);
+        camera.update();
     }
 
-    private void logic() {
-
+    private void logic(float delta) {
+        inputProcessorService.processPlayerMovement(delta, player);
+        centerCameraOnPlayer();
     }
 
     private void draw() {
