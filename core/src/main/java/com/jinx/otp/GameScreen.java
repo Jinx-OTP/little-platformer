@@ -1,5 +1,6 @@
 package com.jinx.otp;
 
+import static com.jinx.otp.constants.Constants.DEFAULT_CAMERA_WIDTH;
 import static com.jinx.otp.constants.Constants.PLAYER_HEIGHT;
 import static com.jinx.otp.constants.Constants.PLAYER_WIDTH;
 
@@ -17,8 +18,6 @@ import com.jinx.otp.player.Player;
 import com.jinx.otp.services.InputProcessorService;
 
 public class GameScreen implements Screen {
-
-    private final float DEFAULT_CAMERA_WIDTH = 10f;
 
     private LittlePlatformerGame game;
 
