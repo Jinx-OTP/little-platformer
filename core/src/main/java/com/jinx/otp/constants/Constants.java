@@ -6,5 +6,6 @@ public class Constants {
     public static final float PLAYER_WIDTH = 0.5f;
     
     public static final String PLAYER_IMAGE_FILE_NAME = "player.png";
+    public static final String PLATFORM_TEXTURE_PATH = "platform.png";
 
 }

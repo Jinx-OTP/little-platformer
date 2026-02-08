@@ -1,5 +1,7 @@
 package com.jinx.otp.map;
 
+import static com.jinx.otp.constants.Constants.PLATFORM_TEXTURE_PATH;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +17,6 @@ import com.jinx.otp.exceptions.InvalidFilePathException;
 import com.jinx.otp.map.Obstacle.ObstacleType;
 
 public class GameMap {
-
-    private final String platformTexturePath = "platform.png"; // TODO extract to config file
 
     private MapModel model;
 
@@ -41,7 +41,7 @@ public class GameMap {
     }
 
     private void loadDefaultTextures() {
-        final FileHandle platformImageFile = Gdx.files.internal(platformTexturePath);
+        final FileHandle platformImageFile = Gdx.files.internal(PLATFORM_TEXTURE_PATH);
         platformTexture = new Texture(platformImageFile);
     }
 
