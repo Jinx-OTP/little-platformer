@@ -3,7 +3,7 @@ package com.jinx.otp.constants;
 import com.badlogic.gdx.Application;
 
 public class Constants {
-    public static int LOG_LEVEL = Application.LOG_DEBUG;
+    public static int LOG_LEVEL = Application.LOG_INFO;
 
     public static float PLAYER_SPEED = 3f;
     public static final float PLAYER_HEIGHT = 1f;
