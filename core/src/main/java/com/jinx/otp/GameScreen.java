@@ -125,7 +125,7 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         if (0 <= width || 0 <= height) return;
-
+        // TODO handle proper camera heigh/width ratio
     }
 
     @Override

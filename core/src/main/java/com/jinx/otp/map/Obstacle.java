@@ -78,7 +78,6 @@ public class Obstacle implements Json.Serializable {
 
     @Override
     public void write(Json json) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'write'");
     }
 

@@ -38,35 +38,48 @@ public class PlayerMovementService {
         final float distance = PLAYER_SPEED * delta;
         switch (direction) {
             case UP:
-                if (player.isMidAir()) {
-                    break;
-                }
-                player.increaseVerticalVelocity(PLAYER_JUMP_VELOCITY);
-                player.setMidAir(true);
-                player.setCurrentPlatform(null);
+                movePlayerJump(player);
                 break;
             case DOWN:
                 player.decreaseVerticalVelocity(10f * delta);
                 break;
             case LEFT:
-                player.translateX(-distance);
-                if (!player.isMidAir() && isPlayerOffPlatform(player)) {
-                    player.setMidAir(true);
-                    player.setCurrentPlatform(null);
-                }
+                movePlayerLeft(player, distance);
                 break;
             case RIGHT:
-                player.translateX(distance);
-                if (!player.isMidAir() && isPlayerOffPlatform(player)) {
-                    player.setMidAir(true);
-                    player.setCurrentPlatform(null);
-                }
+                movePlayerRight(player, distance);
                 break;
         }
         if (Application.LOG_DEBUG == Gdx.app.getLogLevel()) {
             final String message = "Vertical velocity: " + player.getVerticalVelocity();
             Gdx.app.debug(LOG_TAG, message);
         }
+    }
+
+    private void movePlayerLeft(PlayerModel player, float distance) {
+        player.translateX(-distance);
+        playerStillOnPlatform(player);
+    }
+
+    private void movePlayerRight(PlayerModel player, float distance) {
+        player.translateX(distance);
+        playerStillOnPlatform(player);
+    }
+
+    private void playerStillOnPlatform(PlayerModel player) {
+        if (!player.isMidAir() && isPlayerOffPlatform(player)) {
+            player.setMidAir(true);
+            player.setCurrentPlatform(null);
+        }
+    }
+
+    private void movePlayerJump(PlayerModel player) {
+        if (player.isMidAir()) {
+            return;
+        }
+        player.increaseVerticalVelocity(PLAYER_JUMP_VELOCITY);
+        player.setMidAir(true);
+        player.setCurrentPlatform(null);
     }
 
     private boolean isPlayerOffPlatform(PlayerModel player) {
@@ -83,46 +96,60 @@ public class PlayerMovementService {
         final List<ObstacleCollision> overlapingObstacles = mapService.getOverlapingObstacles(map, playerBounds);
         if (0 < overlapingObstacles.size()) {
             for (ObstacleCollision collision : overlapingObstacles) {
-                if (Application.LOG_DEBUG == Gdx.app.getLogLevel()) {
-                    Gdx.app.debug(LOG_TAG, collision.toString());
-                }
-                float verticalOverlap = 0f;
-                float horizontalOverlap = 0f;
-                boolean isOnLeft = false;
-                boolean isOnTop = false;
-                if (collision.getDirections().containsKey(Direction.UP)) {
-                    verticalOverlap = collision.getDirections().get(Direction.UP);
-                    isOnTop = true;
-                }
-                if (collision.containsDirection(Direction.DOWN)) {
-                    verticalOverlap = collision.getDirectionValue(Direction.DOWN);
-                    isOnTop = false;
-                }
-                if (collision.containsDirection(Direction.LEFT)) {
-                    horizontalOverlap = collision.getDirectionValue(Direction.LEFT);
-                    isOnLeft = true;
-                }
-                if (collision.containsDirection(Direction.RIGHT)) {
-                    horizontalOverlap = collision.getDirectionValue(Direction.RIGHT);
-                    isOnLeft = false;
-                }
-
-                final Obstacle overlapingObstacle = collision.getOverlapingObstacle();
-                if (horizontalOverlap < verticalOverlap) {
-                    if (isOnLeft) {
-                        clampPositionToLeftObstacleBorder(player, map, overlapingObstacle);
-                        continue;
-                    }
-                    clampPositionToRightObstacleBorder(player, map, overlapingObstacle);
-                    continue;
-                }
-                if (isOnTop) {
-                    clampPositionToTopObstacleBorder(player, map, overlapingObstacle);
-                    continue;
-                }
-                clampPostionToBottomObstacleBorder(player, map, overlapingObstacle);
+                movePlayerToSideOfObstacle(player, map, collision);
             }
         }
+    }
+
+    private void movePlayerToSideOfObstacle(PlayerModel player, MapModel map, ObstacleCollision collision) {
+        if (Application.LOG_DEBUG == Gdx.app.getLogLevel()) {
+            Gdx.app.debug(LOG_TAG, collision.toString());
+        }
+        float verticalOverlap = 0f;
+        float horizontalOverlap = 0f;
+        boolean isOnLeft = false;
+        boolean isOnTop = false;
+        if (collision.containsDirection(Direction.UP)) {
+            verticalOverlap = collision.getDirectionValue(Direction.UP);
+            isOnTop = true;
+        }
+        if (collision.containsDirection(Direction.DOWN)) {
+            verticalOverlap = collision.getDirectionValue(Direction.DOWN);
+            isOnTop = false;
+        }
+        if (collision.containsDirection(Direction.LEFT)) {
+            horizontalOverlap = collision.getDirectionValue(Direction.LEFT);
+            isOnLeft = true;
+        }
+        if (collision.containsDirection(Direction.RIGHT)) {
+            horizontalOverlap = collision.getDirectionValue(Direction.RIGHT);
+            isOnLeft = false;
+        }
+        clampPositionToObstacle(player, map, collision, horizontalOverlap, verticalOverlap, isOnLeft, isOnTop);
+    }
+
+    private void clampPositionToObstacle(
+            PlayerModel player,
+            MapModel map,
+            ObstacleCollision collision,
+            float horizontalOverlap, 
+            float verticalOverlap, 
+            boolean isOnLeft, 
+            boolean isOnTop) {
+        final Obstacle overlapingObstacle = collision.getOverlapingObstacle();
+        if (horizontalOverlap < verticalOverlap) {
+            if (isOnLeft) {
+                clampPositionToLeftObstacleBorder(player, map, overlapingObstacle);
+                return;
+            }
+            clampPositionToRightObstacleBorder(player, map, overlapingObstacle);
+            return;
+        }
+        if (isOnTop) {
+            clampPositionToTopObstacleBorder(player, map, overlapingObstacle);
+            return;
+        }
+        clampPostionToBottomObstacleBorder(player, map, overlapingObstacle);
     }
 
     public void clampToMapBorders(PlayerModel player, MapModel map) {
