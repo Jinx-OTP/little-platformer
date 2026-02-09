@@ -204,7 +204,7 @@ public class PlayerMovementService {
         }
     }
 
-    public void handleGravitation(PlayerModel player, float delta) {
+    public void handleGravitation(PlayerModel player, MapModel map, float delta) {
         if (!player.isMidAir()) {
             return;
         }
@@ -212,6 +212,16 @@ public class PlayerMovementService {
         final float verticalDistance = verticalVelocity * delta;
         player.translateY(verticalDistance);
         player.decreaseVerticalVelocity(GRAVITATION_CONSTANT * delta);
+        if (0 >= player.getPosY()) {
+            respawnPlayer(player, map);
+        }
+    }
+
+    private void respawnPlayer(PlayerModel player, MapModel map) {
+        final float mapStartX = map.getPlayerStartX();
+        final float mapStartY = map.getPlayerStartY();
+        player.setPosX(mapStartX);
+        player.setPosY(mapStartY);
     }
 
 }

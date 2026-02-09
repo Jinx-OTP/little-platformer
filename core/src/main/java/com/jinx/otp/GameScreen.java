@@ -80,7 +80,7 @@ public class GameScreen implements Screen {
         final PlayerModel playerModel = player.getModel();
         final MapModel mapModel = map.getModel();
         inputProcessorService.processPlayerMovement(delta, playerModel);
-        playerMovementService.handleGravitation(playerModel, delta);
+        playerMovementService.handleGravitation(playerModel, mapModel, delta);
         playerMovementService.handleObstacleCollision(playerModel, mapModel);
         playerMovementService.clampToMapBorders(playerModel, mapModel);
         centerCameraOnPlayer();
