@@ -62,6 +62,13 @@
             "posY": 15,
             "width": 4,
             "height": 2
+        },
+        {
+            "type": "platform",
+            "posX": 2,
+            "posY": 4,
+            "width": 2,
+            "height": 1
         }
     ]
 }
