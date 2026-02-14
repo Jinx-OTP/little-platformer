@@ -11,9 +11,14 @@ public class PlayerModel {
 
     private float posX;
     private float posY;
+    private float baseWidth = PLAYER_WIDTH;
+    private float baseHeight = PLAYER_HEIGHT;
+    private float width = PLAYER_WIDTH;
+    private float height = PLAYER_HEIGHT;
     private float verticalVelocity = 0f;
     private boolean isMidAir = true;
     private Obstacle currentPlatform;
+    private boolean isCrouched = false;
 
     public PlayerModel() {
     }
@@ -48,11 +53,11 @@ public class PlayerModel {
     }
     
     public float getWidth() {
-        return PLAYER_WIDTH;
+        return width;
     }
 
     public float getHeight() {
-        return PLAYER_HEIGHT;
+        return height;
     }
 
     public float getVerticalVelocity() {
@@ -68,7 +73,7 @@ public class PlayerModel {
     }
 
     public Rectangle getBoundingRectangle() {
-        return new Rectangle(posX, posY, PLAYER_WIDTH, PLAYER_HEIGHT);
+        return new Rectangle(posX, posY, width, height);
     }
 
     public boolean isMidAir() {
@@ -94,6 +99,20 @@ public class PlayerModel {
 
     public void setCurrentPlatform(Obstacle currentPlatform) {
         this.currentPlatform = currentPlatform;
+    }
+
+    public void croutch() {
+        if (!this.isCrouched) {
+            this.isCrouched = true;
+            height *= 0.75f;
+            width *= 1.2f;
+        }
+    }
+
+    public void standUp() {
+        this.isCrouched = false;
+        height = baseHeight;
+        width = baseWidth;
     }
 
 }

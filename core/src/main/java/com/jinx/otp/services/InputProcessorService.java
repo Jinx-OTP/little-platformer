@@ -20,6 +20,7 @@ public class InputProcessorService {
     private boolean isLeftKeyStillPressed = false;
     private boolean isJumpKeyStillPressed = false;
     private boolean isCrouchKeyStillPressed = false;
+    private boolean isCrouchKeyJustReleased = false;
 
     private InputProcessorService() {
         playerMovementService = PlayerMovementService.getPlayerMovementService();
@@ -55,6 +56,7 @@ public class InputProcessorService {
 
     public void keyCrouchReleased() {
         isCrouchKeyStillPressed = false;
+        isCrouchKeyJustReleased = true;
     }
 
     public void processPlayerMovement(float delta, PlayerModel player) {
@@ -68,7 +70,10 @@ public class InputProcessorService {
             playerMovementService.move(player, delta, Direction.UP);
         }
         if (isCrouchKeyStillPressed) {
-            playerMovementService.move(player, delta, Direction.DOWN);
+            playerMovementService.croutch(player);
+        } else if (isCrouchKeyJustReleased) {
+            playerMovementService.standUp(player);
+            isCrouchKeyJustReleased = false;
         }
     }
 

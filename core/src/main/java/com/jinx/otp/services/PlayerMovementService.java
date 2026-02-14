@@ -4,8 +4,6 @@ import static com.jinx.otp.constants.Constants.GRAVITATION_CONSTANT;
 import static com.jinx.otp.constants.Constants.PLAYER_JUMP_VELOCITY;
 import static com.jinx.otp.constants.Constants.PLAYER_SPEED;
 
-import java.util.List;
-
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
@@ -93,14 +91,11 @@ public class PlayerMovementService {
 
     public void handleObstacleCollision(PlayerModel player, MapModel map) {
         final Rectangle playerBounds = player.getBoundingRectangle();
-        final List<ObstacleCollision> overlapingObstacles = mapService.getOverlapingObstacles(map, playerBounds);
-        if (0 < overlapingObstacles.size()) {
-            for (ObstacleCollision collision : overlapingObstacles) {
-                movePlayerToSideOfObstacle(player, map, collision);
-            }
-        }
+        mapService.getOverlapingObstacles(map, playerBounds)
+                  .stream()
+                  .forEach(collision -> movePlayerToSideOfObstacle(player, map, collision));
     }
-
+    
     private void movePlayerToSideOfObstacle(PlayerModel player, MapModel map, ObstacleCollision collision) {
         if (Application.LOG_DEBUG == Gdx.app.getLogLevel()) {
             Gdx.app.debug(LOG_TAG, collision.toString());
@@ -224,4 +219,11 @@ public class PlayerMovementService {
         player.setPosY(mapStartY);
     }
 
+    public void croutch(PlayerModel player) {
+        player.croutch();
+    }
+
+    public void standUp(PlayerModel player) {
+        player.standUp();
+    }
 }
