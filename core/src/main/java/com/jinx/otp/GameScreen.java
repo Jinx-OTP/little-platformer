@@ -123,9 +123,12 @@ public class GameScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height) { 
         if (0 <= width || 0 <= height) return;
-        // TODO handle proper camera heigh/width ratio
+        final float newRatio = (float) height / (float) width;
+        final float ratioAdjustedHeight = DEFAULT_CAMERA_WIDTH * newRatio;
+        camera.viewportHeight = ratioAdjustedHeight;
+        camera.update();
     }
 
     @Override
