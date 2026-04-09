@@ -1,8 +1,8 @@
-package com.jinx.otp.map;
+package com.jinx.otp.rooms;
 
 import java.util.List;
 
-public class MapModel {
+public class RoomModel {
 
     private int id;
     private String name;

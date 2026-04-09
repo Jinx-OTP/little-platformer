@@ -9,10 +9,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.jinx.otp.constants.Direction;
-import com.jinx.otp.map.MapModel;
-import com.jinx.otp.map.Obstacle;
-import com.jinx.otp.map.ObstacleCollision;
 import com.jinx.otp.player.PlayerModel;
+import com.jinx.otp.rooms.RoomModel;
+import com.jinx.otp.rooms.Obstacle;
+import com.jinx.otp.rooms.ObstacleCollision;
 
 public class PlayerMovementService {
 
@@ -26,10 +26,10 @@ public class PlayerMovementService {
         return playerMovementService;
     }
 
-    private MapService mapService;
+    private RoomService mapService;
 
     private PlayerMovementService() {
-        mapService = MapService.getMapService();
+        mapService = RoomService.getMapService();
     }
 
     public void move(PlayerModel player, float delta, Direction direction) {
@@ -89,14 +89,14 @@ public class PlayerMovementService {
         return (playerRightBorder < platformLeftBorder || platformRightBorder < playerLeftBorder);
     }
 
-    public void handleObstacleCollision(PlayerModel player, MapModel map) {
+    public void handleObstacleCollision(PlayerModel player, RoomModel map) {
         final Rectangle playerBounds = player.getBoundingRectangle();
         mapService.getOverlapingObstacles(map, playerBounds)
                   .stream()
                   .forEach(collision -> movePlayerToSideOfObstacle(player, map, collision));
     }
     
-    private void movePlayerToSideOfObstacle(PlayerModel player, MapModel map, ObstacleCollision collision) {
+    private void movePlayerToSideOfObstacle(PlayerModel player, RoomModel map, ObstacleCollision collision) {
         if (Application.LOG_DEBUG == Gdx.app.getLogLevel()) {
             Gdx.app.debug(LOG_TAG, collision.toString());
         }
@@ -125,7 +125,7 @@ public class PlayerMovementService {
 
     private void clampPositionToObstacle(
             PlayerModel player,
-            MapModel map,
+            RoomModel map,
             ObstacleCollision collision,
             float horizontalOverlap, 
             float verticalOverlap, 
@@ -147,7 +147,7 @@ public class PlayerMovementService {
         clampPostionToBottomObstacleBorder(player, map, overlapingObstacle);
     }
 
-    public void clampToMapBorders(PlayerModel player, MapModel map) {
+    public void clampToRoomBorders(PlayerModel player, RoomModel map) {
         final float minX = 0f;
         final float maxX = map.getWidth();
         final float playerPosX = player.getPosX();
@@ -161,7 +161,7 @@ public class PlayerMovementService {
         player.setPosY(playerClampedY);
     }
 
-    private void clampPositionToRightObstacleBorder(PlayerModel player, MapModel map, Obstacle obstacle) {
+    private void clampPositionToRightObstacleBorder(PlayerModel player, RoomModel map, Obstacle obstacle) {
         final float rightObstacleBorder = obstacle.getWidth() + obstacle.getPosX();
         player.setPosX(rightObstacleBorder);
         if (Gdx.app.getLogLevel() == Application.LOG_DEBUG) {
@@ -169,7 +169,7 @@ public class PlayerMovementService {
         }
     }
 
-    private void clampPositionToLeftObstacleBorder(PlayerModel player, MapModel map, Obstacle obstacle) {
+    private void clampPositionToLeftObstacleBorder(PlayerModel player, RoomModel map, Obstacle obstacle) {
         final float leftObstacleBorder = obstacle.getPosX();
         final float playerWidthAdjustedBorder = leftObstacleBorder - player.getWidth();
         player.setPosX(playerWidthAdjustedBorder);
@@ -178,7 +178,7 @@ public class PlayerMovementService {
         }
     }
 
-    private void clampPostionToBottomObstacleBorder(PlayerModel player, MapModel map, Obstacle obstacle) {
+    private void clampPostionToBottomObstacleBorder(PlayerModel player, RoomModel map, Obstacle obstacle) {
         final float bottomObstacleBorder = obstacle.getPosY();
         final float playerHeightAdjustedBorder = bottomObstacleBorder - player.getHeight();
         player.setPosY(playerHeightAdjustedBorder);
@@ -188,7 +188,7 @@ public class PlayerMovementService {
         }
     }
 
-    private void clampPositionToTopObstacleBorder(PlayerModel player, MapModel map, Obstacle obstacle) {
+    private void clampPositionToTopObstacleBorder(PlayerModel player, RoomModel map, Obstacle obstacle) {
         final float topObstacleBorder = obstacle.getPosY() + obstacle.getHeight();
         player.setPosY(topObstacleBorder);
         player.setMidAir(false);
@@ -199,7 +199,7 @@ public class PlayerMovementService {
         }
     }
 
-    public void handleGravitation(PlayerModel player, MapModel map, float delta) {
+    public void handleGravitation(PlayerModel player, RoomModel map, float delta) {
         if (!player.isMidAir()) {
             return;
         }
@@ -212,7 +212,7 @@ public class PlayerMovementService {
         }
     }
 
-    private void respawnPlayer(PlayerModel player, MapModel map) {
+    private void respawnPlayer(PlayerModel player, RoomModel map) {
         final float mapStartX = map.getPlayerStartX();
         final float mapStartY = map.getPlayerStartY();
         player.setPosX(mapStartX);

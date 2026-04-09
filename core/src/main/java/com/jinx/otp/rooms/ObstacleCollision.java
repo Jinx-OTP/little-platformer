@@ -1,4 +1,4 @@
-package com.jinx.otp.map;
+package com.jinx.otp.rooms;
 
 import java.util.Map;
 

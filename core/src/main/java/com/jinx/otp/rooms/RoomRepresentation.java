@@ -1,4 +1,4 @@
-package com.jinx.otp.map;
+package com.jinx.otp.rooms;
 
 import static com.jinx.otp.constants.Constants.PLATFORM_TEXTURE_PATH;
 
@@ -12,11 +12,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Array;
 import com.jinx.otp.exceptions.InvalidArgumentException;
 import com.jinx.otp.exceptions.InvalidFilePathException;
-import com.jinx.otp.map.Obstacle.ObstacleType;
+import com.jinx.otp.rooms.Obstacle.ObstacleType;
 
-public class GameMap {
+public class RoomRepresentation {
 
-    private MapModel model;
+    private RoomModel model;
 
     private Texture backgroundTexture;
     private Texture platformTexture;
@@ -25,7 +25,7 @@ public class GameMap {
     private Array<Sprite> obstacleSprites;
 
 
-    public GameMap(MapModel model) {
+    public RoomRepresentation(RoomModel model) {
         loadDefaultTextures();
         build(model);
     }
@@ -38,7 +38,7 @@ public class GameMap {
         return model.getPlayerStartY();
     }
 
-    public MapModel getModel() {
+    public RoomModel getModel() {
         return model;
     }
 
@@ -47,7 +47,7 @@ public class GameMap {
         platformTexture = new Texture(platformImageFile);
     }
 
-    public void build(MapModel newMap) {
+    public void build(RoomModel newMap) {
         this.model = newMap;
         buildBackground();
         buildObstacles();

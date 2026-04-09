@@ -12,11 +12,11 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.jinx.otp.input_processors.PlayerMoveInputProcessor;
-import com.jinx.otp.map.GameMap;
-import com.jinx.otp.map.MapLoader;
-import com.jinx.otp.map.MapModel;
 import com.jinx.otp.player.Player;
 import com.jinx.otp.player.PlayerModel;
+import com.jinx.otp.rooms.RoomModel;
+import com.jinx.otp.rooms.RoomLoader;
+import com.jinx.otp.rooms.RoomRepresentation;
 import com.jinx.otp.services.InputProcessorService;
 import com.jinx.otp.services.PlayerMovementService;
 
@@ -28,8 +28,8 @@ public class GameScreen implements Screen {
 
     private final PlayerMovementService playerMovementService;
 
-    private GameMap map;
-    private MapLoader mapLoader;
+    private RoomRepresentation roomRepresentation;
+    private RoomLoader roomLoader;
     private Player player;
 
     private InputProcessorService inputProcessorService = InputProcessorService.getInputProcessorService();
@@ -38,7 +38,7 @@ public class GameScreen implements Screen {
         this.game = game;
         this.playerMovementService = PlayerMovementService.getPlayerMovementService();
         setupCamera();
-        setupMap();
+        setupRoom();
         setupPlayer();
         Gdx.input.setInputProcessor(new PlayerMoveInputProcessor());
     }
@@ -55,14 +55,16 @@ public class GameScreen implements Screen {
         camera.update();
     }
 
-    private void setupMap() {
-        mapLoader = new MapLoader();
-        map = mapLoader.load();
+    private void setupRoom() {
+        roomLoader = new RoomLoader();
+        // TODO move to config file
+        final int testRoomId = 1;
+        roomRepresentation = roomLoader.load(testRoomId);
     }
 
     private void setupPlayer() {
-        final MapModel mapModel = map.getModel();
-        final PlayerModel playerModel = new PlayerModel(mapModel);
+        final RoomModel roomModel = roomRepresentation.getModel();
+        final PlayerModel playerModel = new PlayerModel(roomModel);
         player = new Player(playerModel);
     }
 
@@ -78,29 +80,29 @@ public class GameScreen implements Screen {
 
     private void logic(float delta) {
         final PlayerModel playerModel = player.getModel();
-        final MapModel mapModel = map.getModel();
+        final RoomModel roomModel = roomRepresentation.getModel();
         inputProcessorService.processPlayerMovement(delta, playerModel);
-        playerMovementService.handleGravitation(playerModel, mapModel, delta);
-        playerMovementService.handleObstacleCollision(playerModel, mapModel);
-        playerMovementService.clampToMapBorders(playerModel, mapModel);
+        playerMovementService.handleGravitation(playerModel, roomModel, delta);
+        playerMovementService.handleObstacleCollision(playerModel, roomModel);
+        playerMovementService.clampToRoomBorders(playerModel, roomModel);
         centerCameraOnPlayer();
     }
 
     private void centerCameraOnPlayer() {
         final PlayerModel playerModel = player.getModel();
-        final MapModel mapModel = map.getModel();
+        final RoomModel roomModel = roomRepresentation.getModel();
 
         final float playerX = playerModel.getPosX();
         final float playerY = playerModel.getPosY();
         
         final float cameraX = playerX + (PLAYER_WIDTH / 2);
         final float minCameraX = camera.viewportWidth / 2;
-        final float maxCameraX = mapModel.getWidth() - (camera.viewportWidth / 2);
+        final float maxCameraX = roomModel.getWidth() - (camera.viewportWidth / 2);
         final float adjustedCameraX = MathUtils.clamp(cameraX, minCameraX, maxCameraX);
 
         final float cameraY = playerY + (PLAYER_HEIGHT / 2);
         final float minCameraY = camera.viewportHeight / 2;
-        final float maxCameraY = mapModel.getHeight() - (camera.viewportHeight / 2);
+        final float maxCameraY = roomModel.getHeight() - (camera.viewportHeight / 2);
         final float adjustedCameraY = MathUtils.clamp(cameraY, minCameraY, maxCameraY);
 
         final float newCameraZ = camera.position.z;
@@ -116,7 +118,7 @@ public class GameScreen implements Screen {
 
         batch.begin();
 
-        map.draw(batch);
+        roomRepresentation.draw(batch);
         player.draw(batch);
 
         batch.end();
@@ -145,7 +147,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-        map.dispose();
+        roomRepresentation.dispose();
     }
 
 }

@@ -1,4 +1,4 @@
-package com.jinx.otp.map;
+package com.jinx.otp.rooms;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;

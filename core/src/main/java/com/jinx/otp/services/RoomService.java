@@ -10,28 +10,28 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Rectangle;
 import com.jinx.otp.constants.Direction;
 import com.jinx.otp.exceptions.InvalidArgumentException;
-import com.jinx.otp.map.MapModel;
-import com.jinx.otp.map.Obstacle;
-import com.jinx.otp.map.ObstacleCollision;
+import com.jinx.otp.rooms.RoomModel;
+import com.jinx.otp.rooms.Obstacle;
+import com.jinx.otp.rooms.ObstacleCollision;
 
-public class MapService {
+public class RoomService {
 
-    private static final String LOG_TAG = MapService.class.getName();
+    private static final String LOG_TAG = RoomService.class.getName();
 
-    private static MapService mapService;
+    private static RoomService mapService;
 
-    public static MapService getMapService() {
+    public static RoomService getMapService() {
         if (null == mapService) {
-            mapService = new MapService();
+            mapService = new RoomService();
         }
         return mapService;
     }
 
-    private MapService() {
+    private RoomService() {
 
     }
 
-    public List<ObstacleCollision> getOverlapingObstacles(MapModel map, Rectangle object) {
+    public List<ObstacleCollision> getOverlapingObstacles(RoomModel map, Rectangle object) {
         if (null == object) {
             String message = "Cannot determine overlaping obstacles, if rectangle is null!";
             throw new InvalidArgumentException(message);
@@ -41,8 +41,8 @@ public class MapService {
             Rectangle obstacleRectangle = obstacle.getBoundingRectangle();
             if (object.overlaps(obstacleRectangle)) {
                 final Map<Direction, Float> overlaps = new HashMap<>();
-                setHorizontalOverlap(overlaps, object, obstacleRectangle);
-                setVerticalOverlap(overlaps, object, obstacleRectangle);
+                determineHorizontalOverlap(overlaps, object, obstacleRectangle);
+                determineVerticalOverlap(overlaps, object, obstacleRectangle);
                 ObstacleCollision collision = new ObstacleCollision(obstacle, overlaps);
                 overlappingObstacles.add(collision);
             }
@@ -50,7 +50,7 @@ public class MapService {
         return overlappingObstacles;
     }
 
-    private void setHorizontalOverlap(Map<Direction, Float> overlaps, Rectangle object, Rectangle obstacle) {
+    private void determineHorizontalOverlap(Map<Direction, Float> overlaps, Rectangle object, Rectangle obstacle) {
         final float objectLeftBorder = object.getX();
         final float objectRightBorder = object.getX() + object.getWidth();
         final float obstacleLeftBorder = obstacle.getX();
@@ -67,7 +67,7 @@ public class MapService {
         overlaps.put(Direction.LEFT, leftOverlap);
     }
 
-    private void setVerticalOverlap(Map<Direction, Float> overlaps, Rectangle object, Rectangle obstacle) {
+    private void determineVerticalOverlap(Map<Direction, Float> overlaps, Rectangle object, Rectangle obstacle) {
         final float objectBottomBorder = object.getY();
         final float objectTopBorder = object.getY() + object.getHeight();
         final float obstacleBottomBorder = obstacle.getY();

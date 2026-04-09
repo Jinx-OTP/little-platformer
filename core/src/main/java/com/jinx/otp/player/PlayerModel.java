@@ -4,8 +4,8 @@ import static com.jinx.otp.constants.Constants.PLAYER_HEIGHT;
 import static com.jinx.otp.constants.Constants.PLAYER_WIDTH;
 
 import com.badlogic.gdx.math.Rectangle;
-import com.jinx.otp.map.MapModel;
-import com.jinx.otp.map.Obstacle;
+import com.jinx.otp.rooms.RoomModel;
+import com.jinx.otp.rooms.Obstacle;
 
 public class PlayerModel {
 
@@ -23,7 +23,7 @@ public class PlayerModel {
     public PlayerModel() {
     }
 
-    public PlayerModel(MapModel map) {
+    public PlayerModel(RoomModel map) {
         posX = map.getPlayerStartX();
         posY = map.getPlayerStartY();
     }
