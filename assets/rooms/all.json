@@ -1,0 +1,15 @@
+{
+    "name": "all-rooms.json",
+    "rooms": [
+        {
+            "id": 1,
+            "name": "first room",
+            "filePath": "rooms/room-1.json"
+        },
+        {
+            "id": 2,
+            "name": "second room",
+            "filePath": "rooms/room-2.json"
+        }
+    ]
+}

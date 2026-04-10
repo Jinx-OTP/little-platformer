@@ -12,7 +12,7 @@ public class RoomModel {
     private float height;
     private float playerStartX;
     private float playerStartY;
-
+    private List<DoorModel> doors;
     
     
     public String getName() {
@@ -79,9 +79,18 @@ public class RoomModel {
         this.playerStartY = playerStartY;
     }
 
+    public List<DoorModel> getDoors() {
+        return doors;
+    }
+
+    public void setDoors(List<DoorModel> doors) {
+        this.doors = doors;
+    }    
+
     @Override
     public String toString() {
         return "MapModel [id=" + id + ", name=" + name + ", obstacles=" + obstacles + ", width=" + width + ", height="
                 + height + "]";
-    }    
+    }
+
 }
