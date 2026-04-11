@@ -8,9 +8,11 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.jinx.otp.GameScreen;
 import com.jinx.otp.constants.Direction;
 import com.jinx.otp.player.PlayerModel;
 import com.jinx.otp.rooms.RoomModel;
+import com.jinx.otp.rooms.DoorModel;
 import com.jinx.otp.rooms.Obstacle;
 import com.jinx.otp.rooms.ObstacleCollision;
 
@@ -29,7 +31,7 @@ public class PlayerMovementService {
     private RoomService mapService;
 
     private PlayerMovementService() {
-        mapService = RoomService.getMapService();
+        mapService = RoomService.getRoomService();
     }
 
     public void move(PlayerModel player, float delta, Direction direction) {
@@ -225,5 +227,17 @@ public class PlayerMovementService {
 
     public void standUp(PlayerModel player) {
         player.standUp();
+    }
+
+    public void doorInteraction(PlayerModel player, RoomModel room, GameScreen screen) {
+        final Rectangle playerBounds = player.getBoundingRectangle();
+        final DoorModel overlappingDoorModel = mapService.getOverlappingDoor(room, playerBounds);
+
+        if (null == overlappingDoorModel) {
+            return;
+        }
+
+        final int nextRoomId = overlappingDoorModel.getRoomId();
+        screen.changeRoom(nextRoomId);
     }
 }

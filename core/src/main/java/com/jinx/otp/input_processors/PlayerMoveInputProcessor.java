@@ -26,6 +26,9 @@ public class PlayerMoveInputProcessor implements InputProcessor {
             case Keys.CONTROL_LEFT:
                 inputProcessorService.keyCrouchPressed();
                 return true;
+            case Keys.ENTER:
+                inputProcessorService.keyDoorInteractionPressed();
+                return true;
             default:
                 return false;
         }
@@ -48,6 +51,9 @@ public class PlayerMoveInputProcessor implements InputProcessor {
             case Keys.DOWN:
             case Keys.CONTROL_LEFT:
                 inputProcessorService.keyCrouchReleased();
+                return true;
+            case Keys.ENTER:
+                inputProcessorService.keyDoorInteractionReleased();
                 return true;
             default:
                 return false;

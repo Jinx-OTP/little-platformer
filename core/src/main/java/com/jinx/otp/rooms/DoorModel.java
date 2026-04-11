@@ -1,5 +1,7 @@
 package com.jinx.otp.rooms;
 
+import com.badlogic.gdx.math.Rectangle;
+
 public class DoorModel {
 
     private int posX;
@@ -59,5 +61,9 @@ public class DoorModel {
     public void setImagePath(String imageFile) {
         this.imagePath = imageFile;
     }
-    
+ 
+    public Rectangle getBoundingRectangle() {
+        return new Rectangle(posX, posY, width, height);
+    }
+
 }

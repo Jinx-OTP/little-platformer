@@ -59,7 +59,7 @@ public class GameScreen implements Screen {
         roomLoader = new RoomLoader();
         // TODO move to config file
         final int testRoomId = 1;
-        roomRepresentation = roomLoader.load(testRoomId);
+        changeRoom(testRoomId);
     }
 
     private void setupPlayer() {
@@ -81,7 +81,7 @@ public class GameScreen implements Screen {
     private void logic(float delta) {
         final PlayerModel playerModel = player.getModel();
         final RoomModel roomModel = roomRepresentation.getModel();
-        inputProcessorService.processPlayerMovement(delta, playerModel);
+        inputProcessorService.processPlayerMovement(delta, playerModel, roomModel, this);
         playerMovementService.handleGravitation(playerModel, roomModel, delta);
         playerMovementService.handleObstacleCollision(playerModel, roomModel);
         playerMovementService.clampToRoomBorders(playerModel, roomModel);
@@ -150,4 +150,10 @@ public class GameScreen implements Screen {
         roomRepresentation.dispose();
     }
 
+    public void changeRoom(int roomId) {
+        if (null != roomRepresentation) {
+            roomRepresentation.dispose();
+        }
+        roomRepresentation = roomLoader.load(roomId);
+    }
 }

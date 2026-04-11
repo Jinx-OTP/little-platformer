@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.jinx.otp.constants.Direction;
 import com.jinx.otp.exceptions.InvalidArgumentException;
 import com.jinx.otp.rooms.RoomModel;
+import com.jinx.otp.rooms.DoorModel;
 import com.jinx.otp.rooms.Obstacle;
 import com.jinx.otp.rooms.ObstacleCollision;
 
@@ -18,13 +19,13 @@ public class RoomService {
 
     private static final String LOG_TAG = RoomService.class.getName();
 
-    private static RoomService mapService;
+    private static RoomService roomService;
 
-    public static RoomService getMapService() {
-        if (null == mapService) {
-            mapService = new RoomService();
+    public static RoomService getRoomService() {
+        if (null == roomService) {
+            roomService = new RoomService();
         }
-        return mapService;
+        return roomService;
     }
 
     private RoomService() {
@@ -91,5 +92,13 @@ public class RoomService {
             return;
         }
         overlaps.put(Direction.DOWN, bottomOverlap);
+    }
+
+    public DoorModel getOverlappingDoor(RoomModel room, Rectangle object) {
+        return room.getDoors()
+            .stream()
+            .filter((door) -> door.getBoundingRectangle().overlaps(object))
+            .findFirst()
+            .get();
     }
 }
