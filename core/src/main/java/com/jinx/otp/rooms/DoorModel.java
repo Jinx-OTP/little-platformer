@@ -10,6 +10,8 @@ public class DoorModel {
 
     private int roomId;
 
+    private String imagePath;
+
     public int getPosX() {
         return posX;
     }
@@ -50,5 +52,12 @@ public class DoorModel {
         this.roomId = roomId;
     }
 
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imageFile) {
+        this.imagePath = imageFile;
+    }
     
 }

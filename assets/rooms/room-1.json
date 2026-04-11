@@ -77,7 +77,8 @@
             "posY": 2,
             "width": 1,
             "height": 2,
-            "roomId": 2
+            "roomId": 2,
+            "imagePath": "door.png"
         }
     ]
 }
